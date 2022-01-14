@@ -14,10 +14,7 @@ start();
 
 async function start() {
     await new Promise((resolve, reject) => {
-        mongoose.connect(db_URI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        });
+        await mongoose.connect(db_URI);
 
         const db = mongoose.connection;
         db.once('open', () => {
