@@ -13,7 +13,7 @@ const topicController = require('./Topic/topicController');
 start();
 
 async function start() {
-    await new Promise((resolve, reject) => {
+    await new Promise(async (resolve, reject) => {
         await mongoose.connect(db_URI);
 
         const db = mongoose.connection;
