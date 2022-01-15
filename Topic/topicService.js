@@ -104,7 +104,7 @@ async function getComments(id) {
 }
 
 async function postComment(id, body) {
-    if(!body.trim()) throw new Error('Cannot post an empty comment.')
+    if(!body.content) throw new Error('Cannot post an empty comment.')
 
     const topic = await Topic.findById(id);
 

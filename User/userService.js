@@ -1,5 +1,6 @@
 const User = require('./UserModel');
-const Topic = require('../Topic/TopicModel')
+const Topic = require('../Topic/TopicModel');
+const Comment = require('../Topic/CommentModel');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -95,6 +96,10 @@ async function editProfile(username, imageUrl, id, password) {
     if (imageUrl) user.imageUrl = imageUrl;
 
     await user.save();
+    
+    await Topic.updateMany({_ownerId: id}, {author: user.username}); 
+    
+    await Comment.updateMany({_ownerId: id}, {author: user.username, authorImageUrl: user.imageUrl}); 
 
     return {
         username: user.username,

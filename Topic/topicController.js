@@ -162,7 +162,7 @@ router.post('/:id/comments', isUser(), async (req, res) => {
         _ownerId: req.user._id,
         author: req.user.username,
         authorImageUrl: await getImageByUsername(req.user.username),
-        content: req.body.content
+        content: req.body.content.trim()
     }
     try {
         const comment = await service.postComment(id, body);
