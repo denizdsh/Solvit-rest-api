@@ -78,6 +78,9 @@ async function login(email, password) {
 
 async function editProfile(username, imageUrl, id, password) {
     const user = await User.findById(id);
+    if(!username) {
+        const err = new Error('Invalid username');
+    }
 
     if (!user) {
         const err = new Error('Invalid user or incorrect password');
@@ -93,13 +96,12 @@ async function editProfile(username, imageUrl, id, password) {
     }
 
     if (username) user.username = username;
-    if (imageUrl) user.imageUrl = imageUrl;
+    user.imageUrl = imageUrl;
 
     await user.save();
-    
-    await Topic.updateMany({_ownerId: id}, {author: user.username}); 
-    
-    await Comment.updateMany({_ownerId: id}, {author: user.username, authorImageUrl: user.imageUrl}); 
+
+    await Topic.updateMany({ _ownerId: id }, { author: user.username });
+    await Comment.updateMany({ _ownerId: id }, { author: user.username, authorImageUrl: user.imageUrl });
 
     return {
         username: user.username,
@@ -119,6 +121,7 @@ async function getSavedTopics(userId) {
 
 async function getImageByUsername(username) {
     const user = await User.findOne({ username });
+
     return user ? user.imageUrl : '';
 }
 
