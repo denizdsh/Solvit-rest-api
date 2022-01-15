@@ -13,16 +13,22 @@ const topicController = require('./Topic/topicController');
 start();
 
 async function start() {
-    await new Promise(async (resolve, reject) => {
+    try {
         await mongoose.connect(db_URI);
+    } catch (err) {
+        console.error('DATABASE CONNECTION REJECTED. TRYING TO RECONNECT.', err);
+        try {
+            await mongoose.connect(db_URI);
+        } catch (err) {
+            throw new Error('DATABASE CONNECTION REJECTED. SHUTTING DOWN.', err);
+        }
+    }
 
-        const db = mongoose.connection;
-        db.once('open', () => {
-            console.log('Database connected.');
-            resolve();
-        });
-        db.on('error', (err) => reject(err));
+    const db = mongoose.connection;
+    db.once('open', () => {
+        console.log('Database connected.');
     });
+    db.on('error', (err) => { throw new Error(err) });
 
     const app = express();
 
