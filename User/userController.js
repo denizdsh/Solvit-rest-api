@@ -38,6 +38,17 @@ router.post('/login', isGuest(), async (req, res) => {
     }
 })
 
+router.post('/login/token', isGuest(), (req, res) => {
+    const token = req.body.accessToken;
+
+    try {
+        const user = service.loginByToken(token);
+        res.json(user);
+    } catch (err) {
+        res.status(401).json({ message: 'Invalid access token. Please sign in.' })
+    }
+})
+
 router.post('/edit-profile', isUser(), async (req, res) => {
     const userId = req.user?._id;
     const username = req.body.username.trim();

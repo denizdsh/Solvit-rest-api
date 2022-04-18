@@ -76,9 +76,20 @@ async function login(email, password) {
     }
 }
 
+function loginByToken(token) {
+    console.log('token', token);
+    if (token) {
+        const user = jwt.verify(token, SECRET);
+        console.log('user', user);
+        const newToken = generateJwt(user);
+        console.log('new token', newToken);
+        return { ...user, accessToken: newToken };
+    }
+}
+
 async function editProfile(username, imageUrl, id, password) {
     const user = await User.findById(id);
-    if(!username) {
+    if (!username) {
         const err = new Error('Invalid username');
     }
 
@@ -195,6 +206,7 @@ async function unsaveTopic(userId, topicId) {
 module.exports = {
     register,
     login,
+    loginByToken,
     editProfile,
     getSavedTopics,
     getImageByUsername,
