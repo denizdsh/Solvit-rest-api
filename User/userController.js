@@ -38,11 +38,11 @@ router.post('/login', isGuest(), async (req, res) => {
     }
 })
 
-router.post('/login/token', isGuest(), (req, res) => {
+router.post('/login/token', isGuest(), async (req, res) => {
     const token = req.body.accessToken;
 
     try {
-        const user = service.loginByToken(token);
+        const user = await service.loginByToken(token);
         res.json(user);
     } catch (err) {
         res.status(401).json({ message: 'Invalid access token. Please sign in.' })

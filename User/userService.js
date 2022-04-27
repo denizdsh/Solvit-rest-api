@@ -76,15 +76,23 @@ async function login(email, password) {
     }
 }
 
-function loginByToken(token) {
+async function loginByToken(token) {
     console.log('token', token);
-    if (token) {
-        const user = jwt.verify(token, SECRET);
-        console.log('user', user);
-        const newToken = generateJwt(user);
-        console.log('new token', newToken);
-        return { ...user, accessToken: newToken };
-    }
+    if (!token) throw new Error('Missing user token');
+
+    const jwtUser = jwt.verify(token, SECRET);
+    console.log('token verified: ', jwtUser);
+
+    const user = await User.findById(jwtUser._id)
+    if (!user) throw new Error('Invalid user');
+
+    return {
+        _id: user._id,
+        email: user.email,
+        username: user.username,
+        imageUrl: user.imageUrl,
+        accessToken: generateJwt(user)
+    };
 }
 
 async function editProfile(username, imageUrl, id, password) {
@@ -115,8 +123,11 @@ async function editProfile(username, imageUrl, id, password) {
     await Comment.updateMany({ _ownerId: id }, { author: user.username, authorImageUrl: user.imageUrl });
 
     return {
+        _id: user._id,
+        email: user.email,
         username: user.username,
         imageUrl: user.imageUrl,
+        accessToken: generateJwt(user)
     }
 }
 
@@ -153,6 +164,8 @@ async function followCategory(userId, category) {
 
     user.followingCategories.push(category);
     await user.save();
+
+    return user.followingCategories;
 }
 
 async function unfollowCategory(userId, category) {
@@ -167,6 +180,8 @@ async function unfollowCategory(userId, category) {
 
     user.followingCategories.splice(user.followingCategories.indexOf(category), 1);
     await user.save();
+
+    return user.followingCategories;
 }
 
 async function saveTopic(userId, topicId) {
@@ -184,6 +199,8 @@ async function saveTopic(userId, topicId) {
 
     user.savedTopics.push(topicId);
     await user.save();
+
+    return user.savedTopics;
 }
 
 async function unsaveTopic(userId, topicId) {
@@ -201,6 +218,8 @@ async function unsaveTopic(userId, topicId) {
 
     user.savedTopics.splice(user.savedTopics.indexOf(topicId), 1);
     await user.save();
+
+    return user.savedTopics;
 }
 
 module.exports = {
