@@ -192,7 +192,7 @@ async function saveTopic(userId, topicId) {
         throw err;
     }
 
-    if (user.savedTopics.includes(topicId)) throw new Error('You have already followed this topic.')
+    if (user.savedTopics.includes(topicId)) throw new Error('You have already saved this topic.')
 
     const topic = await Topic.findById(topicId);
     if (!topic) throw new Error('No such topic in database.');
@@ -211,7 +211,7 @@ async function unsaveTopic(userId, topicId) {
         throw err;
     }
 
-    if (!user.savedTopics.includes(topicId)) throw new Error('You haven\'t followed this topic yet.')
+    if (!user.savedTopics.includes(topicId)) throw new Error('You haven\'t saved this topic yet.')
 
     const topic = await Topic.findById(topicId);
     if (!topic) throw new Error('No such topic in database.');
