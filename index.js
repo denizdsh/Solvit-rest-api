@@ -5,7 +5,7 @@ const cors = require('./middlewares/cors');
 const auth = require('./middlewares/auth');
 
 const PORT = process.env.PORT || 5000;
-const db_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/solvit'
+const db_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/solvit';
 
 const userController = require('./User/userController');
 const topicController = require('./Topic/topicController');

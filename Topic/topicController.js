@@ -18,12 +18,12 @@ router.get('/c/following', isUser(), async (req, res) => {
 
     const userId = req.user._id;
     const categories = await getFollowingCategories(userId)
-    
+
     if (!categories) {
         res.status(err.status || 400).json({ message: 'You haven\'t followed any catogies yet.' })
         return null;
     }
-    
+
     const topics = await service.getTopicsByCategories(categories, sortBy, order);
     res.json(topics);
 })
